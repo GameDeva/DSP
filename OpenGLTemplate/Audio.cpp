@@ -108,6 +108,7 @@ bool CAudio::Initialise()
 		(*minCoefficientsList)[i] = 1.;
 	}
 
+
 	// Create the DSP effect
 	{
 		FMOD_DSP_DESCRIPTION dspdesc;
@@ -127,6 +128,22 @@ bool CAudio::Initialise()
 			return false;
 	}
 
+
+	// Occlusion
+	FMOD_VECTOR wallPoly[4];
+	ToFMODVector(glm::vec3(0,0,0), &wallPoly[0]);
+	ToFMODVector(glm::vec3(0,1,0), &wallPoly[1]);
+	ToFMODVector(glm::vec3(1,1,0), &wallPoly[2]);
+	ToFMODVector(glm::vec3(1,0,0), &wallPoly[3]);
+
+	m_FmodSystem->createGeometry(1, 4, &wall);
+	
+	int polyIndex = 0;
+
+	wall->addPolygon(1.0f, 1.0f, TRUE, 4, wallPoly, &polyIndex);
+	ToFMODVector(glm::vec3(200, 0, 0), &wallPosition);
+	wall->setPosition(&wallPosition);
+	wall->setActive(TRUE);
 
 	return true;
 	
@@ -204,11 +221,12 @@ void CAudio::Update(float currentFilterLerpValue, CCamera *camera)
 	
 	// 3D sound
 	ToFMODVector(camera->GetPosition(), &camPos);
-	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, NULL, NULL);
+	ToFMODVector(camera->GetUpVector(), &camUp);
+	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, NULL, &camUp);
 	m_FmodSystem->set3DSettings(1, 100, 0.1);
 	FmodErrorCheck(result);
 	FMOD_VECTOR f;
-	ToFMODVector(glm::vec3(0, 1000, 0), &f);
+	ToFMODVector(glm::vec3(0, 0, 0), &f);
 	result = m_musicChannel->set3DAttributes(&f, 0, 0);
 	FmodErrorCheck(result);
 

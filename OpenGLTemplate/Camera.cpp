@@ -108,19 +108,19 @@ void CCamera::Update(double dt)
 // Update the camera to respond to key presses for translation
 void CCamera::TranslateByKeyboard(double dt)
 {
-	if (GetKeyState(VK_UP) & 0x80 || GetKeyState('W') & 0x80) {
+	if (GetKeyState('W') & 0x80) {
 		Advance(1.0*dt);
 	}
 
-	if (GetKeyState(VK_DOWN) & 0x80 || GetKeyState('S') & 0x80) {
+	if (GetKeyState('S') & 0x80) {
 		Advance(-1.0*dt);
 	}
 
-	if (GetKeyState(VK_LEFT) & 0x80 || GetKeyState('A') & 0x80) {
+	if (GetKeyState('A') & 0x80) {
 		Strafe(-1.0*dt);
 	}
 
-	if (GetKeyState(VK_RIGHT) & 0x80 || GetKeyState('D') & 0x80) {
+	if (GetKeyState('D') & 0x80) {
 		Strafe(1.0*dt);
 	}
 }

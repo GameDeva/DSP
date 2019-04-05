@@ -265,7 +265,7 @@ void Game::Render()
 
 	// Render the sphere
 	modelViewMatrixStack.Push();
-		modelViewMatrixStack.Translate(glm::vec3(0.0f, 2.0f, 150.0f));
+		modelViewMatrixStack.Translate(glm::vec3(200.0f, 2.0f, 0.0f));
 		modelViewMatrixStack.Scale(2.0f);
 		pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
 		pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
@@ -306,6 +306,9 @@ void Game::Update()
 
 	m_pAudio->Update(currentFilterValue, m_pCamera);
 }
+
+
+
 
 
 void Game::UpdateFilterValue(bool up)

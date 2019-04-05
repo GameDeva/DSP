@@ -59,7 +59,10 @@ private:
 
 	// fmod vectors
 	FMOD_VECTOR camPos;
+	FMOD_VECTOR camUp;
 
-
+	//
+	FMOD::Geometry *wall;
+	FMOD_VECTOR wallPosition;
 };
 
