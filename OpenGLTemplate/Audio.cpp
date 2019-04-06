@@ -107,8 +107,11 @@ bool CAudio::Initialise()
 	dspInfo->coefficientsList = new std::vector<double>();
 	maxCoefficientsList = new std::vector<double>();
 
+	flanger = new Flanger(21, 5, 25.0f);
+
 	importFilter(*maxCoefficientsList);
-	*dspInfo->coefficientsList = *maxCoefficientsList;
+	// *dspInfo->coefficientsList = *maxCoefficientsList;
+	*dspInfo->coefficientsList = flanger->getFlangerFilter();
 
 	int size = maxCoefficientsList->size();
 	dspInfo->cBuffer = new CBuffer<double>(size);
@@ -137,25 +140,6 @@ bool CAudio::Initialise()
 		if (result != FMOD_OK)
 			return false;
 	}
-
-
-	//// Occlusion
-	//FMOD_VECTOR wallPoly[4];
-	//ToFMODVector(glm::vec3(0,0,0), &wallPoly[0]);
-	//ToFMODVector(glm::vec3(0,1,0), &wallPoly[1]);
-	//ToFMODVector(glm::vec3(1,1,0), &wallPoly[2]);
-	//ToFMODVector(glm::vec3(1,0,0), &wallPoly[3]);
-
-	//m_FmodSystem->createGeometry(1, 4, &wall);
-	//
-	//int polyIndex = 0;
-	//FMOD_VECTOR f;
-	//ToFMODVector(glm::vec3(50, 100, 50), &f);
-	//wall->addPolygon(1.0f, 1.0f, TRUE, 4, wallPoly, &polyIndex);
-	//wall->setScale(&f);
-	//ToFMODVector(glm::vec3(50, 0, 0), &wallPosition);
-	//wall->setPosition(&wallPosition);
-	//wall->setActive(TRUE);
 
 	return true;
 	
@@ -226,11 +210,8 @@ bool CAudio::PlayMusicStream()
 	return true;
 }
 
-void CAudio::Update(float currentFilterLerpValue, CCamera *camera)
+void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *camera)
 {
-	// Apply Dynamic filter
-	getlerpValuesBetween(*maxCoefficientsList, *minCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
-	
 	// 3D sound
 	glm::mat4 mat = camera->GetViewMatrix();
 	// update the listener's position with the camera position
@@ -249,6 +230,20 @@ void CAudio::Update(float currentFilterLerpValue, CCamera *camera)
 	//ToFMODVector(glm::vec3(0, 0, 0), &f);
 	//result = m_musicChannel->set3DAttributes(&f, 0, 0);
 	FmodErrorCheck(result);
+
+
+	if (toggleFlanger)
+	{
+		flanger->Update(deltaTime);
+		*dspInfo->coefficientsList = flanger->getFlangerFilter();
+
+	}
+	else {
+		// Apply Dynamic filter
+		LerpBetween(*maxCoefficientsList, *minCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
+
+	}
+
 
 	m_FmodSystem->update();
 }
@@ -275,7 +270,7 @@ void CAudio::importFilter(std::vector<double> &output)
 }
 
 // 1st - min, 2nd - max, 3rd - output to write to, 4th lerpvalue
-void CAudio::getlerpValuesBetween(const std::vector<double> &minV, const std::vector<double> &maxV, std::vector<double> &out, float percent)
+void CAudio::LerpBetween(const std::vector<double> &minV, const std::vector<double> &maxV, std::vector<double> &out, float percent)
 {
 
 	int size = 21;

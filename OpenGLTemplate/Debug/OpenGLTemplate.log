@@ -1,14 +1,9 @@
-﻿  Audio.cpp
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\cbuffer.h(24): warning C4200: nonstandard extension used: zero-sized array in struct/union
-  \\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\cbuffer.h(24): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
-  \\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\audio.h(18): note: see reference to class template instantiation 'CBuffer<double>' being compiled
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\audio.cpp(64): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\audio.cpp(259): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\audio.cpp(265): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
-  Flanger.cpp
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\flanger.cpp(6): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\flanger.cpp(9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-\\nsq022vs\u3\aczm786\mydocs\dsp\opengltemplate\flanger.cpp(28): error C2059: syntax error: '}'
-  Generating Code...
+﻿  Game.cpp
+c:\opengl projects\customdsp\opengltemplate\cbuffer.h(24): warning C4200: nonstandard extension used: zero-sized array in struct/union
+  c:\opengl projects\customdsp\opengltemplate\cbuffer.h(24): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
+  c:\opengl projects\customdsp\opengltemplate\audio.h(19): note: see reference to class template instantiation 'CBuffer<double>' being compiled
+c:\opengl projects\customdsp\opengltemplate\game.cpp(310): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\customdsp\opengltemplate\game.cpp(338): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\customdsp\opengltemplate\game.cpp(348): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\customdsp\opengltemplate\game.cpp(350): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  OpenGLTemplate.vcxproj -> C:\OpenGl Projects\CustomDSP\Debug\OpenGLTemplate.exe

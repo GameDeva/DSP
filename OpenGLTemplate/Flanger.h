@@ -13,6 +13,7 @@ public:
 	void Update(float deltaTime);
 
 private:
+	float change;
 	int _filterSize;
 	int _miFlangePoint;
 	int _currentFlangePoint;

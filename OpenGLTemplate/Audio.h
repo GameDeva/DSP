@@ -5,6 +5,7 @@
 #include <vector>
 #include "CBuffer.h"
 #include "Camera.h"
+#include "Flanger.h"
 
 // #include "Common.h"
 
@@ -31,13 +32,15 @@ public:
 	bool PlayEventSound();
 	bool LoadMusicStream(char *filename);
 	bool PlayMusicStream();
-	void Update(float currentFilterLerpValue, CCamera *camera);
+	void Update(float deltaTime, float currentFilterLerpValue, CCamera *camera);
 
 	void  CreateWall(glm::vec3 &position, float width, float height);
 
 	Info *dspInfo;
 	std::vector<double> *maxCoefficientsList;
 	std::vector<double> *minCoefficientsList;
+	
+	bool toggleFlanger;
 private:
 
 	FMOD_RESULT result;
@@ -54,7 +57,7 @@ private:
 	double getLerpValue(double d1, double d2, float percent); 
 
 	// Both vectors must be of same size
-	void getlerpValuesBetween(const std::vector<double> &v1, const std::vector<double> &v2, std::vector<double> &out, float percent);
+	void LerpBetween(const std::vector<double> &v1, const std::vector<double> &v2, std::vector<double> &out, float percent);
 
 	void importFilter(std::vector<double> &output);
 	void ToFMODVector(glm::vec3 &glVec3, FMOD_VECTOR *fmodVec);
@@ -68,5 +71,6 @@ private:
 	FMOD::Geometry *wall;
 	FMOD_VECTOR wallPosition;
 
-};
+	Flanger *flanger;
 
+};

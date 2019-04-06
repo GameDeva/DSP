@@ -66,6 +66,10 @@ private:
 	float m_wallWidth;
 	glm::vec3 m_wallPos;
 
+	float currentTimer;
+	const float maxTimer = 1.5f;
+	bool toggleMode;
+
 	// Sound cwk
 	float shiftFilterValue = 0.0f;
 	const float filterChangeSpeed = .2f;

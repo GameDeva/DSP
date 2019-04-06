@@ -307,6 +307,10 @@ void Game::Update()
 {
 	// Update delatime
 	deltaTime = 0.001 * m_dtSeconds;
+	currentTimer += deltaTime;
+	if (currentTimer > maxTimer)
+		toggleMode = true;
+
 
 	// Update the camera using the amount of time that has elapsed to avoid framerate dependent motion
 	m_pCamera->Update(m_dtSeconds);
@@ -323,8 +327,15 @@ void Game::Update()
 		UpdateFilterValue(true);
 	}
 
+	if (GetKeyState(VK_SPACE) & 0x80 && toggleMode)
+	{
+		m_pAudio->toggleFlanger = !m_pAudio->toggleFlanger;
+		toggleMode = false;
+		currentTimer = 0;
+	}
 
-	m_pAudio->Update(currentFilterValue, m_pCamera);
+
+	m_pAudio->Update(deltaTime, currentFilterValue, m_pCamera);
 }
 
 
