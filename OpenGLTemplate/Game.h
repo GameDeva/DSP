@@ -16,6 +16,7 @@ class CHighResolutionTimer;
 class CSphere;
 class COpenAssetImportMesh;
 class CAudio;
+class CWall;
 
 class Game {
 private:
@@ -35,6 +36,7 @@ private:
 	CSphere *m_pSphere;
 	CHighResolutionTimer *m_pHighResolutionTimer;
 	CAudio *m_pAudio;
+	CWall *m_pWall;
 
 	// Some other member variables
 	double m_dtSeconds;
@@ -60,6 +62,9 @@ private:
 	int m_frameCount;
 	double m_elapsedTime;
 
+	float m_wallHeight;
+	float m_wallWidth;
+	glm::vec3 m_wallPos;
 
 	// Sound cwk
 	float shiftFilterValue = 0.0f;

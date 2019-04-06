@@ -1,7 +1,9 @@
-﻿  Game.cpp
+﻿  Audio.cpp
 c:\opengl projects\customdsp\opengltemplate\cbuffer.h(24): warning C4200: nonstandard extension used: zero-sized array in struct/union
   c:\opengl projects\customdsp\opengltemplate\cbuffer.h(24): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
   c:\opengl projects\customdsp\opengltemplate\audio.h(18): note: see reference to class template instantiation 'CBuffer<double>' being compiled
-c:\opengl projects\customdsp\opengltemplate\game.cpp(317): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-c:\opengl projects\customdsp\opengltemplate\game.cpp(319): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\customdsp\opengltemplate\audio.cpp(257): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
+c:\opengl projects\customdsp\opengltemplate\audio.cpp(263): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
   OpenGLTemplate.vcxproj -> C:\OpenGl Projects\CustomDSP\Debug\OpenGLTemplate.exe

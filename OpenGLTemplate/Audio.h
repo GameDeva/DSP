@@ -33,6 +33,8 @@ public:
 	bool PlayMusicStream();
 	void Update(float currentFilterLerpValue, CCamera *camera);
 
+	void  CreateWall(glm::vec3 &position, float width, float height);
+
 	Info *dspInfo;
 	std::vector<double> *maxCoefficientsList;
 	std::vector<double> *minCoefficientsList;
@@ -60,9 +62,11 @@ private:
 	// fmod vectors
 	FMOD_VECTOR camPos;
 	FMOD_VECTOR camUp;
+	FMOD_VECTOR camFwd;
 
 	//
 	FMOD::Geometry *wall;
 	FMOD_VECTOR wallPosition;
+
 };
 

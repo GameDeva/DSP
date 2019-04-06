@@ -91,6 +91,7 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cubemap.cpp" />
+    <ClCompile Include="Flanger.cpp" />
     <ClCompile Include="FreeTypeFont.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWindow.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexBufferObject.cpp" />
     <ClCompile Include="VertexBufferObjectIndexed.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
@@ -111,6 +113,7 @@
     <ClInclude Include="CBuffer.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Cubemap.h" />
+    <ClInclude Include="Flanger.h" />
     <ClInclude Include="FreeTypeFont.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameWindow.h" />
@@ -124,6 +127,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexBufferObject.h" />
     <ClInclude Include="VertexBufferObjectIndexed.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\mainShader.frag" />

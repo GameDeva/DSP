@@ -34,6 +34,7 @@ Source code drawn from a number of sources and examples, including contributions
 #include "MatrixStack.h"
 #include "OpenAssetImportMesh.h"
 #include "Audio.h"
+#include "Wall.h"
 
 // Constructor
 Game::Game()
@@ -48,6 +49,7 @@ Game::Game()
 	m_pSphere = NULL;
 	m_pHighResolutionTimer = NULL;
 	m_pAudio = NULL;
+	m_pWall = NULL;
 
 	m_dtSeconds = 0.0;
 	m_framesPerSecond = 0;
@@ -67,6 +69,7 @@ Game::~Game()
 	delete m_pHorseMesh;
 	delete m_pSphere;
 	delete m_pAudio;
+	delete m_pWall;
 
 	if (m_pShaderPrograms != NULL) {
 		for (unsigned int i = 0; i < m_pShaderPrograms->size(); i++)
@@ -96,6 +99,10 @@ void Game::Initialise()
 	m_pHorseMesh = new COpenAssetImportMesh;
 	m_pSphere = new CSphere;
 	m_pAudio = new CAudio;
+	m_pWall = new CWall;
+	m_wallHeight = 20.0f;
+	m_wallWidth = 40.0f;
+	m_wallPos = glm::vec3(0.0f, 0.0f, 50.0f);
 	// m_pHighResolutionTimer = new CHighResolutionTimer;
 
 	RECT dimensions = m_gameWindow.GetDimensions();
@@ -169,6 +176,11 @@ void Game::Initialise()
 	m_pAudio->LoadEventSound("Resources\\Audio\\Boing.wav");					// Royalty free sound from freesound.org
 	m_pAudio->LoadMusicStream("Resources\\Audio\\SummerTown.mp3");	// Royalty free music from http://www.nosoapradio.us/
 	m_pAudio->PlayMusicStream();
+
+	m_pWall->Create("resources\\textures\\dirtpile01.jpg", m_wallWidth, m_wallHeight);
+
+	m_pAudio->CreateWall(m_wallPos, m_wallWidth, m_wallHeight);
+
 }
 
 // Render method runs repeatedly in a loop
@@ -273,7 +285,15 @@ void Game::Render()
 		//pMainProgram->SetUniform("bUseTexture", false);
 		m_pSphere->Render();
 	modelViewMatrixStack.Pop();
-		
+
+	// Render the wall
+	modelViewMatrixStack.Push();
+	modelViewMatrixStack.Translate(m_wallPos);
+	pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
+	pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
+	m_pWall->Render();
+	modelViewMatrixStack.Pop();
+
 	// Draw the 2D graphics after the 3D graphics
 	DisplayFrameRate();
 

@@ -61,8 +61,8 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 			 //^ from the last point we added 
 			 //Write the output to the out buffer
 			
-			outbuffer[(samp * *outchannels) + chan] = sum;
-			// outbuffer[(samp * *outchannels) + chan] = inbuffer[(samp * inchannels) + chan];
+			// outbuffer[(samp * *outchannels) + chan] = sum;
+			outbuffer[(samp * *outchannels) + chan] = inbuffer[(samp * inchannels) + chan];
 		}
 	}
 
@@ -87,11 +87,19 @@ bool CAudio::Initialise()
 		return false;
 
 	// Initialise the system
-	result = m_FmodSystem->init(32, FMOD_INIT_NORMAL, 0);
+	result = m_FmodSystem->init(32, FMOD_INIT_3D_RIGHTHANDED, 0);
 	FmodErrorCheck(result);
 	if (result != FMOD_OK) 
 		return false;
 	
+
+
+	result = m_FmodSystem->set3DSettings(1.0f, 5.0f, .5f);
+	FmodErrorCheck(result);
+	if (result != FMOD_OK)
+		return false;
+
+
 	dspInfo = new Info();
 
 	dspInfo->coefficientsList = new std::vector<double>();
@@ -129,21 +137,23 @@ bool CAudio::Initialise()
 	}
 
 
-	// Occlusion
-	FMOD_VECTOR wallPoly[4];
-	ToFMODVector(glm::vec3(0,0,0), &wallPoly[0]);
-	ToFMODVector(glm::vec3(0,1,0), &wallPoly[1]);
-	ToFMODVector(glm::vec3(1,1,0), &wallPoly[2]);
-	ToFMODVector(glm::vec3(1,0,0), &wallPoly[3]);
+	//// Occlusion
+	//FMOD_VECTOR wallPoly[4];
+	//ToFMODVector(glm::vec3(0,0,0), &wallPoly[0]);
+	//ToFMODVector(glm::vec3(0,1,0), &wallPoly[1]);
+	//ToFMODVector(glm::vec3(1,1,0), &wallPoly[2]);
+	//ToFMODVector(glm::vec3(1,0,0), &wallPoly[3]);
 
-	m_FmodSystem->createGeometry(1, 4, &wall);
-	
-	int polyIndex = 0;
-
-	wall->addPolygon(1.0f, 1.0f, TRUE, 4, wallPoly, &polyIndex);
-	ToFMODVector(glm::vec3(200, 0, 0), &wallPosition);
-	wall->setPosition(&wallPosition);
-	wall->setActive(TRUE);
+	//m_FmodSystem->createGeometry(1, 4, &wall);
+	//
+	//int polyIndex = 0;
+	//FMOD_VECTOR f;
+	//ToFMODVector(glm::vec3(50, 100, 50), &f);
+	//wall->addPolygon(1.0f, 1.0f, TRUE, 4, wallPoly, &polyIndex);
+	//wall->setScale(&f);
+	//ToFMODVector(glm::vec3(50, 0, 0), &wallPosition);
+	//wall->setPosition(&wallPosition);
+	//wall->setActive(TRUE);
 
 	return true;
 	
@@ -203,11 +213,11 @@ bool CAudio::PlayMusicStream()
 
 	// 4) play through 3D channel
 	m_musicChannel->setMode(FMOD_3D);
-	// 6) set the position to be the horse's position
-	//result = m_musicChannel->set3DAttributes(0, 0, 0);
-	//FmodErrorCheck(result);
-	//if (result != FMOD_OK)
-	//	return false;
+	 // 6) set the position to be the horse's position
+	result = m_musicChannel->set3DAttributes(0, 0, 0);
+	FmodErrorCheck(result);
+	if (result != FMOD_OK)
+		return false;
 
 	m_musicChannel->addDSP(0, m_dsp);
 
@@ -220,14 +230,22 @@ void CAudio::Update(float currentFilterLerpValue, CCamera *camera)
 	getlerpValuesBetween(*maxCoefficientsList, *minCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
 	
 	// 3D sound
+	glm::mat4 mat = camera->GetViewMatrix();
+	// update the listener's position with the camera position
 	ToFMODVector(camera->GetPosition(), &camPos);
-	ToFMODVector(camera->GetUpVector(), &camUp);
-	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, NULL, &camUp);
-	m_FmodSystem->set3DSettings(1, 100, 0.1);
-	FmodErrorCheck(result);
-	FMOD_VECTOR f;
-	ToFMODVector(glm::vec3(0, 0, 0), &f);
-	result = m_musicChannel->set3DAttributes(&f, 0, 0);
+	glm::vec3 fd = glm::vec3(-mat[1].x, mat[1].y, mat[1].z);
+	ToFMODVector(fd, &camFwd);
+	glm::vec3 up = glm::vec3(-mat[2].x, mat[2].y, mat[2].z);
+	ToFMODVector(up, &camUp);
+	
+	// ToFMODVector(camera->GetPosition(), &camPos);
+	// ToFMODVector(camera->GetUpVector(), &camUp);
+	// ToFMODVector(camera->GetView(), &camFwd);
+	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
+	// FmodErrorCheck(result);
+	//FMOD_VECTOR f;
+	//ToFMODVector(glm::vec3(0, 0, 0), &f);
+	//result = m_musicChannel->set3DAttributes(&f, 0, 0);
 	FmodErrorCheck(result);
 
 	m_FmodSystem->update();
@@ -277,3 +295,35 @@ void CAudio::ToFMODVector(glm::vec3 &glVec3, FMOD_VECTOR *fmodVec)
 	fmodVec->y = glVec3.y;
 	fmodVec->z = glVec3.z;
 }
+
+/*
+  This method creates the occlusion wall. Note that the poly must be *convex*!
+*/
+void CAudio::CreateWall(glm::vec3 &position, float width, float height)
+{
+	FMOD::Geometry *geometry;
+	result = m_FmodSystem->createGeometry(1, 4, &geometry);
+	FmodErrorCheck(result);
+	if (result != FMOD_OK) {
+		return;
+	}
+
+	float halfWidth = width / 2;
+	FMOD_VECTOR wallPoly[4];
+	wallPoly[0] = { -halfWidth, 0.0f, 0.0f };
+	wallPoly[1] = { -halfWidth, height, 0.0f };
+	wallPoly[2] = { halfWidth, height, 0.0f };
+	wallPoly[3] = { halfWidth, 0.0f, 0.0f };
+	int polyIndex = 0;
+	result = geometry->addPolygon(1.0f, 1.0f, TRUE, 4, wallPoly, &polyIndex);
+	FmodErrorCheck(result);
+	if (result != FMOD_OK) {
+		return;
+	}
+
+	FMOD_VECTOR wallPosition;
+	ToFMODVector(position, &wallPosition);
+	geometry->setPosition(&wallPosition);
+	geometry->setActive(TRUE);
+}
+
