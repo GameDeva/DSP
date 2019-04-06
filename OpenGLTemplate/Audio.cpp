@@ -107,7 +107,7 @@ bool CAudio::Initialise()
 	dspInfo->coefficientsList = new std::vector<double>();
 	maxCoefficientsList = new std::vector<double>();
 
-	flanger = new Flanger(21, 5, 25.0f);
+	flanger = new Flanger(21, 5, 7.0f);
 
 	importFilter(*maxCoefficientsList);
 	// *dspInfo->coefficientsList = *maxCoefficientsList;
@@ -239,7 +239,8 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 		*dspInfo->coefficientsList = flanger->getFlangerFilter();
 
 	}
-	else {
+	else 
+	{
 		// Apply Dynamic filter
 		LerpBetween( *minCoefficientsList, *maxCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
 

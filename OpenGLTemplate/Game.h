@@ -72,7 +72,7 @@ private:
 
 	// Sound cwk
 	float shiftFilterValue = 0.0f;
-	const float filterChangeSpeed = .2f;
+	const float filterChangeSpeed = .4f;
 	float currentFilterValue = 0.0f;
 
 	void UpdateFilterValue(bool up);
