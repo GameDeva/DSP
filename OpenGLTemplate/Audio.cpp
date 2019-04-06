@@ -61,8 +61,8 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 			 //^ from the last point we added 
 			 //Write the output to the out buffer
 			
-			// outbuffer[(samp * *outchannels) + chan] = sum;
-			outbuffer[(samp * *outchannels) + chan] = inbuffer[(samp * inchannels) + chan];
+			outbuffer[(samp * *outchannels) + chan] = sum;
+			// outbuffer[(samp * *outchannels) + chan] = inbuffer[(samp * inchannels) + chan];
 		}
 	}
 
