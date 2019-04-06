@@ -6,17 +6,19 @@
 class Flanger
 {
 public:
-	Flanger(int sizeOfFilter, int flangerEffectSize, float flangerWaverSpeed) : 
+	Flanger(int sizeOfFilter, int flangerEffectSize, float flangerWaverSpeed);
 	~Flanger();
 
-	std::vector<double> getFlangerFilter() { return flangerFilter; }
+	std::vector<double> &getFlangerFilter() { return *flangerFilter; }
 	void Update(float deltaTime);
 
 private:
+	int _filterSize;
+	int _miFlangePoint;
 	int _currentFlangePoint;
 	int _flangerEffectSize;
 	int _flangerWaverSpeed;
-	std::vector<double> flangerFilter;
+	std::vector<double> *flangerFilter;
 
 
 };

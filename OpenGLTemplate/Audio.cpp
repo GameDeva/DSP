@@ -76,6 +76,8 @@ CAudio::CAudio()
 CAudio::~CAudio()
 {
 	delete dspInfo;
+	delete minCoefficientsList;
+	delete maxCoefficientsList;
 }
 
 bool CAudio::Initialise()
