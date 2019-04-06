@@ -34,7 +34,7 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 		for (int chan = 0; chan < *outchannels; chan++)
 		{
 
-			 dspInfo->cBuffer->atPosition(0);
+			dspInfo->cBuffer->atPosition(0);
 
 			/*
 			This DSP filter just halves the volume!
@@ -42,7 +42,7 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 			*/
 
 			// Add value to circular buffer			
-			 dspInfo->cBuffer->push_back(inbuffer[(samp * inchannels) + chan]);
+			dspInfo->cBuffer->push_back(inbuffer[(samp * inchannels) + chan]);
 
 			double sum = 0;
 
@@ -58,9 +58,9 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 				currentTail--;
 			}
 
-			 //^ from the last point we added 
-			 //Write the output to the out buffer
-			
+			//^ from the last point we added 
+			//Write the output to the out buffer
+
 			outbuffer[(samp * *outchannels) + chan] = sum;
 			// outbuffer[(samp * *outchannels) + chan] = inbuffer[(samp * inchannels) + chan];
 		}
@@ -85,15 +85,15 @@ bool CAudio::Initialise()
 	// Create an FMOD system
 	result = FMOD::System_Create(&m_FmodSystem);
 	FmodErrorCheck(result);
-	if (result != FMOD_OK) 
+	if (result != FMOD_OK)
 		return false;
 
 	// Initialise the system
 	result = m_FmodSystem->init(32, FMOD_INIT_3D_RIGHTHANDED, 0);
 	FmodErrorCheck(result);
-	if (result != FMOD_OK) 
+	if (result != FMOD_OK)
 		return false;
-	
+
 
 
 	result = m_FmodSystem->set3DSettings(1.0f, 5.0f, .5f);
@@ -118,7 +118,10 @@ bool CAudio::Initialise()
 	minCoefficientsList = new std::vector<double>(size);
 	for (int i = 0; i < size; i++)
 	{
-		(*minCoefficientsList)[i] = 1.;
+		if (i == 0)
+			(*minCoefficientsList)[i] = 1.;
+		else
+			(*minCoefficientsList)[i] = 0.;
 	}
 
 
@@ -142,7 +145,7 @@ bool CAudio::Initialise()
 	}
 
 	return true;
-	
+
 }
 
 // Load an event sound
@@ -150,11 +153,11 @@ bool CAudio::LoadEventSound(char *filename)
 {
 	result = m_FmodSystem->createSound(filename, FMOD_LOOP_OFF, 0, &m_eventSound);
 	FmodErrorCheck(result);
-	if (result != FMOD_OK) 
+	if (result != FMOD_OK)
 		return false;
 
 	return true;
-	
+
 
 }
 
@@ -182,7 +185,7 @@ bool CAudio::LoadMusicStream(char *filename)
 	result = m_FmodSystem->createStream(filename, NULL | FMOD_LOOP_NORMAL, 0, &m_music);
 	FmodErrorCheck(result);
 
-	if (result != FMOD_OK) 
+	if (result != FMOD_OK)
 		return false;
 	return true;
 
@@ -199,7 +202,7 @@ bool CAudio::PlayMusicStream()
 
 	// 4) play through 3D channel
 	m_musicChannel->setMode(FMOD_3D);
-	 // 5) set the position to be the horse's position
+	// 5) set the position to be the horse's position
 	result = m_musicChannel->set3DAttributes(0, 0, 0);
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
@@ -220,7 +223,7 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	ToFMODVector(fd, &camFwd);
 	glm::vec3 up = glm::vec3(-mat[2].x, mat[2].y, mat[2].z);
 	ToFMODVector(up, &camUp);
-	
+
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
 	FmodErrorCheck(result);
 
@@ -238,7 +241,7 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	}
 	else {
 		// Apply Dynamic filter
-		LerpBetween(*maxCoefficientsList, *minCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
+		LerpBetween( *minCoefficientsList, *maxCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
 
 	}
 
@@ -250,9 +253,9 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 void CAudio::importFilter(std::vector<double> &output)
 {
 	FILE* f = fopen("resources\\Filters\\lowPassFilter.txt", "r");
-	
+
 	double d;
-	
+
 	while (1)
 	{
 		int val = fscanf(f, "%lf", &d);
