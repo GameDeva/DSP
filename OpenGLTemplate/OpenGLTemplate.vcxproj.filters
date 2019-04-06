@@ -51,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Flanger.cpp" />
+    <ClCompile Include="CBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

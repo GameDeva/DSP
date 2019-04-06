@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CBuffer.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="Flanger.cpp" />
     <ClCompile Include="FreeTypeFont.cpp" />

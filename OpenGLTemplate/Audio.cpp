@@ -114,7 +114,7 @@ bool CAudio::Initialise()
 	*dspInfo->coefficientsList = flanger->getFlangerFilter();
 
 	int size = maxCoefficientsList->size();
-	dspInfo->cBuffer = new CBuffer<double>(size);
+	dspInfo->cBuffer = new CBuffer(size);
 	minCoefficientsList = new std::vector<double>(size);
 	for (int i = 0; i < size; i++)
 	{
@@ -199,7 +199,7 @@ bool CAudio::PlayMusicStream()
 
 	// 4) play through 3D channel
 	m_musicChannel->setMode(FMOD_3D);
-	 // 6) set the position to be the horse's position
+	 // 5) set the position to be the horse's position
 	result = m_musicChannel->set3DAttributes(0, 0, 0);
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
@@ -221,11 +221,9 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	glm::vec3 up = glm::vec3(-mat[2].x, mat[2].y, mat[2].z);
 	ToFMODVector(up, &camUp);
 	
-	// ToFMODVector(camera->GetPosition(), &camPos);
-	// ToFMODVector(camera->GetUpVector(), &camUp);
-	// ToFMODVector(camera->GetView(), &camFwd);
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
-	// FmodErrorCheck(result);
+	FmodErrorCheck(result);
+
 	//FMOD_VECTOR f;
 	//ToFMODVector(glm::vec3(0, 0, 0), &f);
 	//result = m_musicChannel->set3DAttributes(&f, 0, 0);

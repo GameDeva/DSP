@@ -11,7 +11,7 @@
 
 struct Info
 {
-	CBuffer<double> *cBuffer;
+	CBuffer *cBuffer;
 	std::vector<double> *coefficientsList;
 
 	~Info()
