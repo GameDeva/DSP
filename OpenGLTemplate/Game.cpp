@@ -180,14 +180,14 @@ void Game::Initialise()
 	m_pAudio->PlayMusicStream();
 
 	walls = vector<CWall>();
-/*
-	m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
-	
+	/*
+		m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
 
-	m_pAudio->CreateWall(m_wallPos, , glm::vec3(0, 0, 1), m_pWall->m_width, m_pWall->m_height);
-*/
+
+		m_pAudio->CreateWall(m_wallPos, , glm::vec3(0, 0, 1), m_pWall->m_width, m_pWall->m_height);
+	*/
 	FILE *wallSetupFile;
-	int count=0;
+	int count = 0;
 	fopen_s(&wallSetupFile, "resources\\scripts\\wallsInfo.txt", "r");
 
 	fscanf(wallSetupFile, "%d", &count);
@@ -209,7 +209,7 @@ void Game::Initialise()
 		int upTurn = 0;
 
 		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d", &w, &h, &x1, &y1, &z1, &x2, &y2, &z2, &x3, &y3, &z3, &fwdTurn, &upTurn);
-			
+
 		walls.push_back(CWall());
 		walls[i].Create("resources\\textures\\wall.jpg", w, h, glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), glm::vec3(x3, y3, z3), fwdTurn, upTurn);
 		m_pAudio->CreateWall(walls[i].pos, walls[i].up, walls[i].fwd, walls[i].m_width, walls[i].m_height);
@@ -340,7 +340,7 @@ void Game::Render()
 		modelViewMatrixStack.Translate(walls[i].pos);
 		if (walls[i].fwdTurn)
 			modelViewMatrixStack.Rotate(glm::vec3(0, 1, 0), 90.0);
-		if(walls[i].upTurn)
+		if (walls[i].upTurn)
 			modelViewMatrixStack.Rotate(glm::vec3(1, 0, 0), 90.0);
 		// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
 		pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
@@ -377,9 +377,9 @@ void Game::Update()
 	}
 	else
 	{
-		horsePosition += (moveDirection * moveSpeed * (sin(moveSpeedMultiplier) + 2) * (float)deltaTime);
+		horsePosition += (moveDirection * moveSpeed * (toggleManualControl? currentFilterValue : glm::abs(sin(moveSpeedMultiplier))) * (float)deltaTime);
 	}
-	
+
 
 	currentTimer += deltaTime;
 	if (currentTimer > maxTimer)
@@ -390,15 +390,19 @@ void Game::Update()
 	m_pCamera->Update(m_dtSeconds);
 
 	shiftFilterValue = 0;
-	if (GetKeyState(VK_DOWN) & 0x80)
+
+	if (!m_pAudio->toggleFlanger && toggleManualControl)
 	{
-		shiftFilterValue = -1;
-		UpdateFilterValue(false);
-	}
-	else if (GetKeyState(VK_UP) & 0x80)
-	{
-		shiftFilterValue = 1;
-		UpdateFilterValue(true);
+		if (GetKeyState(VK_DOWN) & 0x80)
+		{
+			shiftFilterValue = -1;
+			UpdateFilterValue(false);
+		}
+		else if (GetKeyState(VK_UP) & 0x80)
+		{
+			shiftFilterValue = 1;
+			UpdateFilterValue(true);
+		}
 	}
 
 	if (GetKeyState(VK_SPACE) & 0x80 && toggleMode)
@@ -408,13 +412,21 @@ void Game::Update()
 		currentTimer = 0;
 	}
 
+	if (controlTimer >= maxControlTimer)
+	{
+		if (GetKeyState(VK_TAB) & 0x80)
+		{
+			toggleManualControl = !toggleManualControl;
+			controlTimer = 0;
+		}
+	}
+	else
+		controlTimer += deltaTime;
 
-	m_pAudio->Update(deltaTime, currentFilterValue, m_pCamera, horsePosition);
+
+	m_pAudio->Update(deltaTime, toggleManualControl ? currentFilterValue : glm::abs(sin(moveSpeedMultiplier)), m_pCamera, horsePosition);
+
 }
-
-
-
-
 
 void Game::UpdateFilterValue(bool up)
 {
@@ -468,11 +480,10 @@ void Game::DisplayFrameRate()
 	if (m_pAudio->toggleFlanger)
 		m_pFtFont->Render(20, height - 50, 20, "Flanger: ON");
 	else
-	{
 		m_pFtFont->Render(20, height - 50, 20, "Flanger: OFF");
+	
+	if(toggleManualControl)
 		m_pFtFont->Render(20, height - 80, 20, "Filter Level = %f", currentFilterValue);
-	}
-		
 
 	//m_pFtFont->Render(20, height - 80, 20, "Filter Level = %f", currentFilterValue);
 

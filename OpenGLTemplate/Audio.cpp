@@ -238,7 +238,6 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
 	FmodErrorCheck(result);
 
-	m_eventChannel->setMode(FMOD_3D);
 	// 6) set the position to be the horse's position
 	FMOD_VECTOR soundpos;
 	ToFMODVector(soundPosition, &soundpos);

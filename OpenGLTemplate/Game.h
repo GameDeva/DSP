@@ -68,7 +68,12 @@ private:
 
 	float currentTimer;
 	const float maxTimer = 1.5f;
+
+	float controlTimer;
+	const float maxControlTimer = 1.5f;
+
 	bool toggleMode;
+	bool toggleManualControl;
 
 	// Sound cwk
 	float shiftFilterValue = 0.0f;
