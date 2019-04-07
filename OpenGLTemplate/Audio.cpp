@@ -29,12 +29,19 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 	FMOD_RESULT result = thisdsp->getUserData((void **)&dspInfo);
 	FmodErrorCheck(result);
 
+	CBuffer *current;
+
+	if (dspInfo->flangerOn)
+		current = dspInfo->cBufferFlange;
+	else
+		current = dspInfo->cBuffer;
+
 	for (unsigned int samp = 0; samp < length; samp++)
 	{
 		for (int chan = 0; chan < *outchannels; chan++)
 		{
 
-			dspInfo->cBuffer->atPosition(0);
+			current->atPosition(0);
 
 			/*
 			This DSP filter just halves the volume!
@@ -42,19 +49,19 @@ FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer,
 			*/
 
 			// Add value to circular buffer			
-			dspInfo->cBuffer->push_back(inbuffer[(samp * inchannels) + chan]);
+			current->push_back(inbuffer[(samp * inchannels) + chan]);
 
 			double sum = 0;
 
 			// For each value in the reversed set of coefficients apply convolution to the circular buffer
-			int currentTail = dspInfo->cBuffer->getTail();
+			int currentTail = current->getTail();
 			int coeffSize = dspInfo->coefficientsList->size();
 			for (int i = 0; i < coeffSize; i++)
 			{
 				if (currentTail < 0)
 					break;
 
-				sum += dspInfo->cBuffer->atPosition(currentTail) * (*dspInfo->coefficientsList)[i];
+				sum += current->atPosition(currentTail) * (*dspInfo->coefficientsList)[i];
 				currentTail--;
 			}
 
@@ -107,7 +114,9 @@ bool CAudio::Initialise()
 	dspInfo->coefficientsList = new std::vector<double>();
 	maxCoefficientsList = new std::vector<double>();
 
-	flanger = new Flanger(21, 5, 7.0f);
+	flanger = new Flanger(100, 5, 7.0f);
+	dspInfo->cBufferFlange = new CBuffer(100);
+	dspInfo->flangerOn = true;
 
 	importFilter(*maxCoefficientsList);
 	// *dspInfo->coefficientsList = *maxCoefficientsList;
@@ -237,13 +246,13 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	{
 		flanger->Update(deltaTime);
 		*dspInfo->coefficientsList = flanger->getFlangerFilter();
-
+		dspInfo->flangerOn = true;
 	}
 	else 
 	{
 		// Apply Dynamic filter
 		LerpBetween( *minCoefficientsList, *maxCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
-
+		dspInfo->flangerOn = false;
 	}
 
 

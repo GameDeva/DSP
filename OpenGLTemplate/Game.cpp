@@ -177,7 +177,7 @@ void Game::Initialise()
 	m_pAudio->LoadMusicStream("Resources\\Audio\\DST-Garote.mp3");	// Royalty free music from http://www.nosoapradio.us/
 	m_pAudio->PlayMusicStream();
 
-	m_pWall->Create("resources\\textures\\dirtpile01.jpg", m_wallWidth, m_wallHeight);
+	m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight);
 
 	m_pAudio->CreateWall(m_wallPos, m_wallWidth, m_wallHeight);
 
@@ -289,6 +289,7 @@ void Game::Render()
 	// Render the wall
 	modelViewMatrixStack.Push();
 	modelViewMatrixStack.Translate(m_wallPos);
+	modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
 	pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
 	pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
 	m_pWall->Render();

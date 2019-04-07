@@ -1,8 +1,8 @@
 ﻿  Game.cpp
-d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\cbuffer.h(23): warning C4200: nonstandard extension used: zero-sized array in struct/union
-  d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\cbuffer.h(23): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
-d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(310): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(338): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(348): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(350): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-  OpenGLTemplate.vcxproj -> D:\Manikandan\Documents\Computer Graphics - Masters\DSP\Debug\OpenGLTemplate.exe
+c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): warning C4200: nonstandard extension used: zero-sized array in struct/union
+  c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
+c:\opengl projects\dsp\opengltemplate\game.cpp(311): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(339): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(349): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(351): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  OpenGLTemplate.vcxproj -> C:\OpenGl Projects\DSP\Debug\OpenGLTemplate.exe

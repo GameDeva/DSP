@@ -12,7 +12,10 @@
 struct Info
 {
 	CBuffer *cBuffer;
+	CBuffer *cBufferFlange;
 	std::vector<double> *coefficientsList;
+
+	bool flangerOn;
 
 	~Info()
 	{
@@ -72,5 +75,4 @@ private:
 	FMOD_VECTOR wallPosition;
 
 	Flanger *flanger;
-
 };
