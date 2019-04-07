@@ -10,7 +10,7 @@ CWall::~CWall()
 
 
 // Create the plane, including its geometry, texture mapping, normal, and colour
-void CWall::Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos, glm::vec3 up, glm::vec3 fwd)
+void CWall::Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos, glm::vec3 up, glm::vec3 fwd, bool fwdTurn, bool upTurn)
 {
 
 	this->pos = pos;
@@ -19,6 +19,9 @@ void CWall::Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos,
 
 	m_width = fWidth;
 	m_height = fHeight;
+
+	this->fwdTurn = fwdTurn;
+	this->upTurn = upTurn;
 
 	// Load the texture
 	m_texture.Load(sFilename, true);

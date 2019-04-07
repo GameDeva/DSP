@@ -9,7 +9,7 @@ class CWall
 public:
 	CWall();
 	~CWall();
-	void Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos, glm::vec3 up, glm::vec3 fwd);
+	void Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos, glm::vec3 up, glm::vec3 fwd, bool fwdTurn, bool upTurn);
 	void Render();
 	void Release();
 
@@ -19,6 +19,9 @@ public:
 	glm::vec3 pos;
 	glm::vec3 up;
 	glm::vec3 fwd;
+
+	bool fwdTurn;
+	bool upTurn;
 
 private:
 	UINT m_vao;

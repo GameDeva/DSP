@@ -205,11 +205,13 @@ void Game::Initialise()
 		int x3 = 0;
 		int y3 = 0;
 		int z3 = 0;
+		int fwdTurn = 0;
+		int upTurn = 0;
 
-		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d", &w, &h, &x1, &y1, &z1, &x2, &y2, &z2, &x3, &y3, &z3);
+		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d", &w, &h, &x1, &y1, &z1, &x2, &y2, &z2, &x3, &y3, &z3, &fwdTurn, &upTurn);
 			
 		walls.push_back(CWall());
-		walls[i].Create("resources\\textures\\wall.jpg", w, h, glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), glm::vec3(x3, y3, z3));
+		walls[i].Create("resources\\textures\\wall.jpg", w, h, glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), glm::vec3(x3, y3, z3), fwdTurn, upTurn);
 		m_pAudio->CreateWall(walls[i].pos, walls[i].up, walls[i].fwd, walls[i].m_width, walls[i].m_height);
 	}
 
@@ -327,7 +329,10 @@ void Game::Render()
 		// Render the wall
 		modelViewMatrixStack.Push();
 		modelViewMatrixStack.Translate(walls[i].pos);
-		// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
+		if (walls[i].fwdTurn)
+			modelViewMatrixStack.Rotate(glm::vec3(0, 1, 0), 90.0);
+		if(walls[i].upTurn)
+			modelViewMatrixStack.Rotate(glm::vec3(1, 0, 0), 90.0);
 		// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
 		pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
 		pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
