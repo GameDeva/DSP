@@ -87,7 +87,7 @@ private:
 	int currentDestinationPoint;
 	glm::vec3 moveDirection;
 	float moveSpeed;
-	float moveSpeedMultiplier;
+	float gameElapsedTime;
 
 	glm::vec3 horsePosition;
 

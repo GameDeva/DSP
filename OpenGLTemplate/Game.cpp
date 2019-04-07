@@ -179,52 +179,54 @@ void Game::Initialise()
 	m_pAudio->LoadMusicStream("Resources\\Audio\\DST-Garote.mp3");	// Royalty free music from http://www.nosoapradio.us/
 	m_pAudio->PlayMusicStream();
 
+	// Create vector list of walls
 	walls = vector<CWall>();
-	/*
-		m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
-
-
-		m_pAudio->CreateWall(m_wallPos, , glm::vec3(0, 0, 1), m_pWall->m_width, m_pWall->m_height);
-	*/
+	
+	// Using a data driven method, we will load the appropriate size, location, view, up and rotation of the walls that will be created
+	//
 	FILE *wallSetupFile;
 	int count = 0;
 	fopen_s(&wallSetupFile, "resources\\scripts\\wallsInfo.txt", "r");
 
 	fscanf(wallSetupFile, "%d", &count);
 
+	// For each of the walls that are read
 	for (int i = 0; i < count; i++)
 	{
-		int w = 0;
-		int h = 0;
-		int x1 = 0;
-		int y1 = 0;
-		int z1 = 0;
-		int x2 = 0;
-		int y2 = 0;
-		int z2 = 0;
-		int x3 = 0;
-		int y3 = 0;
-		int z3 = 0;
+		int width = 0;
+		int height = 0;
+		int posX = 0;
+		int posY = 0;
+		int posZ = 0;
+		int upX = 0;
+		int upY = 0;
+		int upZ = 0;
+		int fwdX = 0;
+		int fwdY = 0;
+		int fwdZ = 0;
 		int fwdTurn = 0;
 		int upTurn = 0;
 
-		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d", &w, &h, &x1, &y1, &z1, &x2, &y2, &z2, &x3, &y3, &z3, &fwdTurn, &upTurn);
-
+		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d", &width, &height, &posX, &posY, &posZ, &upX, &upY, &upZ, &fwdX, &fwdY, &fwdZ, &fwdTurn, &upTurn);
+		// Create new wall object
 		walls.push_back(CWall());
-		walls[i].Create("resources\\textures\\wall.jpg", w, h, glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), glm::vec3(x3, y3, z3), fwdTurn, upTurn);
+		// Call the create method on the new object with the appropriate data and a wall texture
+		walls[i].Create("resources\\textures\\wall.jpg", width, height, glm::vec3(posX, posY, posZ), glm::vec3(upX, upY, upZ), glm::vec3(fwdX, fwdY, fwdZ), fwdTurn, upTurn);
+		// Call the audio object to create a geometry object for fmod to apply any occlusion
 		m_pAudio->CreateWall(walls[i].pos, walls[i].up, walls[i].fwd, walls[i].m_width, walls[i].m_height);
 	}
 
 	fclose(wallSetupFile);
 
+	// Create 4 movepoints for the horse to travel between
 	movePoints.push_back(glm::vec3(130.0f, 0.0f, -60.0f));
 	movePoints.push_back(glm::vec3(130.0f, 0.0f, -190.0f));
 	movePoints.push_back(glm::vec3(280.0f, 0.0f, -190.0f));
 	movePoints.push_back(glm::vec3(280.0f, 0.0f, -60.0f));
 
+	// Initialise move values
 	currentDestinationPoint = 0;
 	moveSpeed = 40.0f;
-
 	horsePosition = movePoints[currentDestinationPoint];
 
 }
@@ -332,12 +334,14 @@ void Game::Render()
 	m_pSphere->Render();
 	modelViewMatrixStack.Pop();
 
+	// Render the walls
 	int wallsSize = walls.size();
 	for (int i = 0; i < wallsSize; i++)
 	{
 		// Render the wall
 		modelViewMatrixStack.Push();
 		modelViewMatrixStack.Translate(walls[i].pos);
+		// Rotate walls based on given orientation
 		if (walls[i].fwdTurn)
 			modelViewMatrixStack.Rotate(glm::vec3(0, 1, 0), 90.0);
 		if (walls[i].upTurn)
@@ -364,8 +368,10 @@ void Game::Update()
 	// Update delatime
 	deltaTime = 0.001 * m_dtSeconds;
 
-	moveSpeedMultiplier += deltaTime;
+	// Update the total elapsed time of the game that can be used for progress 
+	gameElapsedTime += deltaTime;
 
+	// 
 	if (glm::distance(movePoints[currentDestinationPoint], horsePosition) <= 5.0f)
 	{
 		horsePosition = movePoints[currentDestinationPoint];
@@ -377,10 +383,10 @@ void Game::Update()
 	}
 	else
 	{
-		horsePosition += (moveDirection * moveSpeed * (toggleManualControl? currentFilterValue : glm::abs(sin(moveSpeedMultiplier))) * (float)deltaTime);
+		horsePosition += (moveDirection * moveSpeed * (toggleManualControl? currentFilterValue : glm::abs(sin(gameElapsedTime))) * (float)deltaTime);
 	}
 
-
+	// Timer check to allow gap between toggle presses
 	currentTimer += deltaTime;
 	if (currentTimer > maxTimer)
 		toggleMode = true;
@@ -389,8 +395,8 @@ void Game::Update()
 	// Update the camera using the amount of time that has elapsed to avoid framerate dependent motion
 	m_pCamera->Update(m_dtSeconds);
 
-	shiftFilterValue = 0;
-
+	shiftFilterValue = 0; // Set to 0 every frame 
+	// If the flanger mode is off and manual control is on, allow control of filtervalue using up and down key
 	if (!m_pAudio->toggleFlanger && toggleManualControl)
 	{
 		if (GetKeyState(VK_DOWN) & 0x80)
@@ -405,6 +411,7 @@ void Game::Update()
 		}
 	}
 
+	// Toggle flanger mode
 	if (GetKeyState(VK_SPACE) & 0x80 && toggleMode)
 	{
 		m_pAudio->toggleFlanger = !m_pAudio->toggleFlanger;
@@ -412,6 +419,7 @@ void Game::Update()
 		currentTimer = 0;
 	}
 
+	// Toggle manual control mode
 	if (controlTimer >= maxControlTimer)
 	{
 		if (GetKeyState(VK_TAB) & 0x80)
@@ -423,11 +431,12 @@ void Game::Update()
 	else
 		controlTimer += deltaTime;
 
-
-	m_pAudio->Update(deltaTime, toggleManualControl ? currentFilterValue : glm::abs(sin(moveSpeedMultiplier)), m_pCamera, horsePosition);
+	// Call the audio's update with the appropriate values
+	m_pAudio->Update(deltaTime, toggleManualControl ? currentFilterValue : glm::abs(sin(gameElapsedTime)), m_pCamera, horsePosition);
 
 }
 
+// Based on the direction of the filter update, increment/decrement the currentFilterValue 
 void Game::UpdateFilterValue(bool up)
 {
 	if (up)
@@ -435,6 +444,7 @@ void Game::UpdateFilterValue(bool up)
 	else
 		currentFilterValue -= filterChangeSpeed * deltaTime;
 
+	// Limit the currentFilterValue between 0 and 1
 	if (currentFilterValue > 1)
 		currentFilterValue = 1;
 	else if (currentFilterValue < 0)

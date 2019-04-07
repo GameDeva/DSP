@@ -16,52 +16,46 @@ void FmodErrorCheck(FMOD_RESULT result)
 	}
 }
 
-
-
+// Callback that will apply the filter or the flanger filter on the samples of music in the assigned fmod system
 FMOD_RESULT F_CALLBACK DSPCallback(FMOD_DSP_STATE * dsp_state, float * inbuffer, float * outbuffer, unsigned int length, int inchannels, int * outchannels)
 {
+	// Access the instance of the dsp the callback is called by
 	FMOD::DSP *thisdsp = (FMOD::DSP *)dsp_state->instance;
-
+	// Create a local pointer to the userdata that we want to persist between calls
 	Info *dspInfo;
 
-	// float inbufferReverse[length];
-
+	// Get the user data and assign the local pointer to it 
 	FMOD_RESULT result = thisdsp->getUserData((void **)&dspInfo);
 	FmodErrorCheck(result);
 
-	CBuffer *current;
-
+	CBuffer *currentCbuffer;
+	// Whether flanger is used or not, assign the relevant cbuffer to be used in the convolution
 	if (dspInfo->flangerOn)
-		current = dspInfo->cBufferFlange;
+		currentCbuffer = dspInfo->cBufferFlange;
 	else
-		current = dspInfo->cBuffer;
+		currentCbuffer = dspInfo->cBuffer;
 
 	for (unsigned int samp = 0; samp < length; samp++)
 	{
 		for (int chan = 0; chan < *outchannels; chan++)
 		{
-
-			current->atPosition(0);
-
-			/*
-			This DSP filter just halves the volume!
-			Input is modified, and sent to output.
-			*/
+			// Get the 
+			currentCbuffer->atPosition(0);
 
 			// Add value to circular buffer			
-			current->push_back(inbuffer[(samp * inchannels) + chan]);
+			currentCbuffer->push_back(inbuffer[(samp * inchannels) + chan]);
 
 			double sum = 0;
 
 			// For each value in the reversed set of coefficients apply convolution to the circular buffer
-			int currentTail = current->getTail();
+			int currentTail = currentCbuffer->getTail();
 			int coeffSize = dspInfo->coefficientsList->size();
 			for (int i = 0; i < coeffSize; i++)
 			{
 				if (currentTail < 0)
 					break;
 
-				sum += current->atPosition(currentTail) * (*dspInfo->coefficientsList)[i];
+				sum += currentCbuffer->atPosition(currentTail) * (*dspInfo->coefficientsList)[i];
 				currentTail--;
 			}
 
@@ -82,6 +76,7 @@ CAudio::CAudio()
 {
 }
 
+// Destructor should destroy all dynamically allocated memory
 CAudio::~CAudio()
 {
 	delete dspInfo;
@@ -89,6 +84,7 @@ CAudio::~CAudio()
 	delete maxCoefficientsList;
 }
 
+// Initialises the audio object with an fmod system, and all the other data needed to play the sound and music
 bool CAudio::Initialise()
 {
 	// Create an FMOD system
@@ -103,30 +99,33 @@ bool CAudio::Initialise()
 	if (result != FMOD_OK)
 		return false;
 
-
-
+	// Set 3D settings of the system to have, dopplerscale = 1, distancefactor = 5, rolloffscale = 0.5
 	result = m_FmodSystem->set3DSettings(1.0f, 5.0f, .5f);
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
 		return false;
 
 
+	// Create an info object that will be persisted between dsp callbacks
 	dspInfo = new Info();
 
 	dspInfo->coefficientsList = new std::vector<double>();
 	maxCoefficientsList = new std::vector<double>();
 
+	// Create new flanger object with filterSize = 100, effectsize = 5, and waverspeed = 7
 	flanger = new Flanger(100, 5, 7.0f);
-	dspInfo->cBufferFlange = new CBuffer(100);
-	dspInfo->flangerOn = true;
-
-	importFilter(*maxCoefficientsList);
-	// *dspInfo->coefficientsList = *maxCoefficientsList;
+	dspInfo->cBufferFlange = new CBuffer(100); // Create a cbuffer to store values when convolving with the samples in the callback
+	dspInfo->flangerOn = true; // Set to true to begin with flanger
+	// Since we are using the flanger, the coeff list will be the flanger filter's current coeff list
 	*dspInfo->coefficientsList = flanger->getFlangerFilter();
 
+	// Import all the values from the text file on the the vectorlist of doubles which will be the maxCoeff list. 
+	importFilter(*maxCoefficientsList);
+	
 	int size = maxCoefficientsList->size();
-	dspInfo->cBuffer = new CBuffer(size);
+	dspInfo->cBuffer = new CBuffer(size); // Create cbuffer with appropriate size
 	minCoefficientsList = new std::vector<double>(size);
+	// All values of min coefficent list must be 0 except the first one
 	for (int i = 0; i < size; i++)
 	{
 		if (i == 0)
@@ -145,7 +144,7 @@ bool CAudio::Initialise()
 		dspdesc.numinputbuffers = 1;
 		dspdesc.numoutputbuffers = 1;
 		dspdesc.read = DSPCallback;
-		dspdesc.userdata = dspInfo;
+		dspdesc.userdata = dspInfo; // Assign data to be persisted to the userdata of the dsp
 		// dspdesc.setparameterdata()
 
 		result = m_FmodSystem->createDSP(&dspdesc, &m_dsp);
@@ -179,9 +178,10 @@ bool CAudio::PlayEventSound()
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
 		return false;
-	//// 4) play through 3D channel
+	// play through 3D channel
 	m_eventChannel->setMode(FMOD_3D);
 	FMOD_VECTOR soundpos;
+	// Initially place the sound at the centre, reassigned later on
 	ToFMODVector(glm::vec3(205, 0, -125), &soundpos);
 	result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
 	FmodErrorCheck(result);
@@ -212,9 +212,9 @@ bool CAudio::PlayMusicStream()
 	if (result != FMOD_OK)
 		return false;
 
-	// 4) play through 3D channel
+	// play through 3D channel
 	m_musicChannel->setMode(FMOD_3D);
-	// 5) set the position to be the horse's position
+	// set the position to be at the centre of the hut
 	FMOD_VECTOR soundpos;
 	ToFMODVector(glm::vec3(205, 0, -125), &soundpos);
 	result = m_musicChannel->set3DAttributes(&soundpos, 0, 0);
@@ -241,33 +241,33 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
 	FmodErrorCheck(result);
 
-	//// 6) set the position to be the horse's position
-	//FMOD_VECTOR soundpos;
-	//ToFMODVector(soundPosition, &soundpos);
-
-	//result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
-	//FmodErrorCheck(result);
-
-	//FMOD_VECTOR f;
-	//ToFMODVector(glm::vec3(0, 0, 0), &f);
-	//result = m_musicChannel->set3DAttributes(&f, 0, 0);
+	// set the event sound position to be the sound position given from the game (i.e. horse's position)
+	FMOD_VECTOR soundpos;
+	ToFMODVector(soundPosition, &soundpos);
+	result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
 	FmodErrorCheck(result);
 
+	FmodErrorCheck(result);
 
+	// Based on if the flanger toggle is on or off, update the dspInfo's coefficient values 
 	if (toggleFlanger)
 	{
+		// Update the current flanger
 		flanger->Update(deltaTime);
+		// Set the current flanger's filter values 
 		*dspInfo->coefficientsList = flanger->getFlangerFilter();
+		// Let the callback know to use the correct CBuffer 
 		dspInfo->flangerOn = true;
 	}
 	else 
 	{
-		// Apply Dynamic filter
+		// Apply Dynamic filter based on the lerp value
 		LerpBetween( *minCoefficientsList, *maxCoefficientsList, *dspInfo->coefficientsList, currentFilterLerpValue);
+		// Let the callback know to use the cbuffer for the lerped filter
 		dspInfo->flangerOn = false;
 	}
 
-
+	// Update the our fmod system
 	m_FmodSystem->update();
 }
 
