@@ -101,7 +101,7 @@ void Game::Initialise()
 	m_pAudio = new CAudio;
 	m_pWall = new CWall;
 	m_wallHeight = 20.0f;
-	m_wallWidth = 40.0f;
+	m_wallWidth = 20.0f;
 	m_wallPos = glm::vec3(0.0f, 0.0f, 50.0f);
 	// m_pHighResolutionTimer = new CHighResolutionTimer;
 
@@ -179,7 +179,7 @@ void Game::Initialise()
 
 	m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight);
 
-	m_pAudio->CreateWall(m_wallPos, m_wallWidth, m_wallHeight);
+	// m_pAudio->CreateWall(m_wallPos, glm::vec3(0,1,0), glm::vec3(0, 0, 1), m_wallWidth, m_wallHeight);
 
 }
 
@@ -255,7 +255,7 @@ void Game::Render()
 
 	// Render the horse 
 	modelViewMatrixStack.Push();
-	modelViewMatrixStack.Translate(glm::vec3(0.0f, 0.0f, 0.0f));
+	modelViewMatrixStack.Translate(horsePosition);
 	modelViewMatrixStack.Rotate(glm::vec3(0.0f, 1.0f, 0.0f), 180.0f);
 	modelViewMatrixStack.Scale(2.5f);
 	pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
@@ -289,7 +289,7 @@ void Game::Render()
 	// Render the wall
 	modelViewMatrixStack.Push();
 	modelViewMatrixStack.Translate(m_wallPos);
-	modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
+	// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
 	pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
 	pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
 	m_pWall->Render();
@@ -306,6 +306,10 @@ void Game::Render()
 // Update method runs repeatedly with the Render method
 void Game::Update()
 {
+	progress += deltaTime;
+
+	horsePosition = glm::vec3(300 * sin(progress), 0 , 0);
+
 	// Update delatime
 	deltaTime = 0.001 * m_dtSeconds;
 	currentTimer += deltaTime;
@@ -336,7 +340,7 @@ void Game::Update()
 	}
 
 
-	m_pAudio->Update(deltaTime, currentFilterValue, m_pCamera);
+	m_pAudio->Update(deltaTime, currentFilterValue, m_pCamera, horsePosition);
 }
 
 

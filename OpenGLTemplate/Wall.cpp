@@ -41,8 +41,8 @@ void CWall::Create(string filename, float width, float height)
 	glm::vec3 planeVertices[4] =
 	{
 		glm::vec3(-halfWidth, 0.0f, 0.0f),
-		glm::vec3(halfWidth, 0.0f, 0.0f),
 		glm::vec3(-halfWidth, m_height, 0.0f),
+		glm::vec3(halfWidth, 0.0f, 0.0f),
 		glm::vec3(halfWidth, m_height, 0.0f),
 	};
 

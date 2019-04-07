@@ -1,8 +1,9 @@
 ﻿  Game.cpp
 c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): warning C4200: nonstandard extension used: zero-sized array in struct/union
   c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
-c:\opengl projects\dsp\opengltemplate\game.cpp(311): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-c:\opengl projects\dsp\opengltemplate\game.cpp(339): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\opengl projects\dsp\opengltemplate\game.cpp(349): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-c:\opengl projects\dsp\opengltemplate\game.cpp(351): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(309): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(315): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(343): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(353): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\opengl projects\dsp\opengltemplate\game.cpp(355): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
   OpenGLTemplate.vcxproj -> C:\OpenGl Projects\DSP\Debug\OpenGLTemplate.exe

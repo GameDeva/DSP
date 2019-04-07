@@ -222,7 +222,7 @@ bool CAudio::PlayMusicStream()
 	return true;
 }
 
-void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *camera)
+void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *camera, glm::vec3 soundPosition)
 {
 	// 3D sound
 	glm::mat4 mat = camera->GetViewMatrix();
@@ -234,6 +234,13 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	ToFMODVector(up, &camUp);
 
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
+	FmodErrorCheck(result);
+
+	m_eventChannel->setMode(FMOD_3D);
+	// 6) set the position to be the horse's position
+	FMOD_VECTOR soundpos;
+	ToFMODVector(soundPosition, &soundpos);
+	result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
 	FmodErrorCheck(result);
 
 	//FMOD_VECTOR f;
@@ -307,7 +314,7 @@ void CAudio::ToFMODVector(glm::vec3 &glVec3, FMOD_VECTOR *fmodVec)
 /*
   This method creates the occlusion wall. Note that the poly must be *convex*!
 */
-void CAudio::CreateWall(glm::vec3 &position, float width, float height)
+void CAudio::CreateWall(glm::vec3 &position, glm::vec3 &up, glm::vec3 &fwd, float width, float height)
 {
 	FMOD::Geometry *geometry;
 	result = m_FmodSystem->createGeometry(1, 4, &geometry);
@@ -332,6 +339,11 @@ void CAudio::CreateWall(glm::vec3 &position, float width, float height)
 	FMOD_VECTOR wallPosition;
 	ToFMODVector(position, &wallPosition);
 	geometry->setPosition(&wallPosition);
+	FMOD_VECTOR wallUp;
+	ToFMODVector(up, &wallUp);
+	FMOD_VECTOR wallFwd;
+	ToFMODVector(fwd, &wallFwd);
+	geometry->setRotation(&wallFwd, &wallUp);
 	geometry->setActive(TRUE);
 }
 

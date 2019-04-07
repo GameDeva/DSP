@@ -35,9 +35,9 @@ public:
 	bool PlayEventSound();
 	bool LoadMusicStream(char *filename);
 	bool PlayMusicStream();
-	void Update(float deltaTime, float currentFilterLerpValue, CCamera *camera);
+	void Update(float deltaTime, float currentFilterLerpValue, CCamera *camera, glm::vec3 soundPosition = glm::vec3(0));
 
-	void  CreateWall(glm::vec3 &position, float width, float height);
+	void  CreateWall(glm::vec3 &position, glm::vec3 &up, glm::vec3 &fwd, float width, float height);
 
 	Info *dspInfo;
 	std::vector<double> *maxCoefficientsList;
