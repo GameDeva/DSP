@@ -179,10 +179,11 @@ bool CAudio::PlayEventSound()
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
 		return false;
-	// 4) play through 3D channel
+	//// 4) play through 3D channel
 	m_eventChannel->setMode(FMOD_3D);
-	// 6) set the position to be the horse's position
-	result = m_eventChannel->set3DAttributes(0, 0, 0);
+	FMOD_VECTOR soundpos;
+	ToFMODVector(glm::vec3(205, 0, -125), &soundpos);
+	result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
 	FmodErrorCheck(result);
 	if (result != FMOD_OK)
 		return false;
@@ -211,13 +212,15 @@ bool CAudio::PlayMusicStream()
 	if (result != FMOD_OK)
 		return false;
 
-	//// 4) play through 3D channel
-	//m_musicChannel->setMode(FMOD_3D);
-	//// 5) set the position to be the horse's position
-	//result = m_musicChannel->set3DAttributes(0, 0, 0);
-	//FmodErrorCheck(result);
-	//if (result != FMOD_OK)
-	//	return false;
+	// 4) play through 3D channel
+	m_musicChannel->setMode(FMOD_3D);
+	// 5) set the position to be the horse's position
+	FMOD_VECTOR soundpos;
+	ToFMODVector(glm::vec3(205, 0, -125), &soundpos);
+	result = m_musicChannel->set3DAttributes(&soundpos, 0, 0);
+	FmodErrorCheck(result);
+	if (result != FMOD_OK)
+		return false;
 
 	m_musicChannel->addDSP(0, m_dsp);
 
@@ -238,11 +241,12 @@ void CAudio::Update(float deltaTime, float currentFilterLerpValue, CCamera *came
 	result = m_FmodSystem->set3DListenerAttributes(0, &camPos, NULL, &camFwd, &camUp);
 	FmodErrorCheck(result);
 
-	// 6) set the position to be the horse's position
-	FMOD_VECTOR soundpos;
-	ToFMODVector(soundPosition, &soundpos);
-	result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
-	FmodErrorCheck(result);
+	//// 6) set the position to be the horse's position
+	//FMOD_VECTOR soundpos;
+	//ToFMODVector(soundPosition, &soundpos);
+
+	//result = m_eventChannel->set3DAttributes(&soundpos, 0, 0);
+	//FmodErrorCheck(result);
 
 	//FMOD_VECTOR f;
 	//ToFMODVector(glm::vec3(0, 0, 0), &f);

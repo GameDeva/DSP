@@ -45,7 +45,7 @@ void CVertexBufferObject::UploadDataToGPU(int usageHint)
 // Adds data to the VBO.  
 void CVertexBufferObject::AddData(void* ptrData, UINT dataSize)
 {
-	m_data.insert(m_data.end(), (BYTE*)ptrData, (BYTE*)ptrData+dataSize);
+ 	m_data.insert(m_data.end(), (BYTE*)ptrData, (BYTE*)ptrData+dataSize);
 }
 
 
