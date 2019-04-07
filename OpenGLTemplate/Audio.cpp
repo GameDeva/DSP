@@ -211,13 +211,13 @@ bool CAudio::PlayMusicStream()
 	if (result != FMOD_OK)
 		return false;
 
-	// 4) play through 3D channel
-	m_musicChannel->setMode(FMOD_3D);
-	// 5) set the position to be the horse's position
-	result = m_musicChannel->set3DAttributes(0, 0, 0);
-	FmodErrorCheck(result);
-	if (result != FMOD_OK)
-		return false;
+	//// 4) play through 3D channel
+	//m_musicChannel->setMode(FMOD_3D);
+	//// 5) set the position to be the horse's position
+	//result = m_musicChannel->set3DAttributes(0, 0, 0);
+	//FmodErrorCheck(result);
+	//if (result != FMOD_OK)
+	//	return false;
 
 	m_musicChannel->addDSP(0, m_dsp);
 
