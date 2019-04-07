@@ -217,6 +217,15 @@ void Game::Initialise()
 
 	fclose(wallSetupFile);
 
+	movePoints.push_back(glm::vec3(130.0f, 0.0f, -60.0f));
+	movePoints.push_back(glm::vec3(130.0f, 0.0f, -190.0f));
+	movePoints.push_back(glm::vec3(280.0f, 0.0f, -190.0f));
+	movePoints.push_back(glm::vec3(280.0f, 0.0f, -60.0f));
+
+	currentDestinationPoint = 0;
+	moveSpeed = 40.0f;
+
+	horsePosition = movePoints[currentDestinationPoint];
 
 }
 
@@ -352,12 +361,26 @@ void Game::Render()
 // Update method runs repeatedly with the Render method
 void Game::Update()
 {
-	progress += deltaTime;
-
-	horsePosition = glm::vec3(300 * sin(progress), 0 , 0);
-
 	// Update delatime
 	deltaTime = 0.001 * m_dtSeconds;
+
+	moveSpeedMultiplier += deltaTime;
+
+	if (glm::distance(movePoints[currentDestinationPoint], horsePosition) <= 5.0f)
+	{
+		horsePosition = movePoints[currentDestinationPoint];
+
+		currentDestinationPoint++;
+		currentDestinationPoint = currentDestinationPoint % movePoints.size();
+
+		moveDirection = glm::normalize(movePoints[currentDestinationPoint] - horsePosition);
+	}
+	else
+	{
+		horsePosition += (moveDirection * moveSpeed * (sin(moveSpeedMultiplier) + 2) * (float)deltaTime);
+	}
+	
+
 	currentTimer += deltaTime;
 	if (currentTimer > maxTimer)
 		toggleMode = true;
