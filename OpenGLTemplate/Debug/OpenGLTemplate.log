@@ -1,9 +1,14 @@
-﻿  Audio.cpp
-c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): warning C4200: nonstandard extension used: zero-sized array in struct/union
-  c:\opengl projects\dsp\opengltemplate\cbuffer.h(23): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
-c:\opengl projects\dsp\opengltemplate\audio.cpp(71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\opengl projects\dsp\opengltemplate\audio.cpp(272): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-c:\opengl projects\dsp\opengltemplate\audio.cpp(278): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  Game.cpp
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\cbuffer.h(23): warning C4200: nonstandard extension used: zero-sized array in struct/union
+  d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\cbuffer.h(23): note: This member will be ignored by a defaulted constructor or copy/move assignment operator
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(214): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(193): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
-  OpenGLTemplate.vcxproj -> C:\OpenGl Projects\DSP\Debug\OpenGLTemplate.exe
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(211): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(367): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(384): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(412): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(422): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+d:\manikandan\documents\computer graphics - masters\dsp\opengltemplate\game.cpp(424): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  OpenGLTemplate.vcxproj -> D:\Manikandan\Documents\Computer Graphics - Masters\DSP\Debug\OpenGLTemplate.exe

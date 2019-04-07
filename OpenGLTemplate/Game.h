@@ -77,8 +77,12 @@ private:
 
 	void UpdateFilterValue(bool up);
 
-
-	float progress = 0.0f;
+	// Horse Values
+	vector<glm::vec3> movePoints;
+	int currentDestinationPoint;
+	glm::vec3 moveDirection;
+	float moveSpeed;
+	float moveSpeedMultiplier;
 
 	glm::vec3 horsePosition;
 
