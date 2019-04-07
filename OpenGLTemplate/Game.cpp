@@ -182,7 +182,8 @@ void Game::Initialise()
 	// Create vector list of walls
 	walls = vector<CWall>();
 	
-	// Using a data driven method, we will load the appropriate size, location, view, up and rotation of the walls that will be created
+	// Using a data driven method, we will load the appropriate size,
+	// location, view, up and rotation of the walls that will be created
 	//
 	FILE *wallSetupFile;
 	int count = 0;
@@ -207,11 +208,17 @@ void Game::Initialise()
 		int fwdTurn = 0;
 		int upTurn = 0;
 
-		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d", &width, &height, &posX, &posY, &posZ, &upX, &upY, &upZ, &fwdX, &fwdY, &fwdZ, &fwdTurn, &upTurn);
+		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d",
+			&width, &height,
+			&posX, &posY, &posZ,
+			&upX, &upY, &upZ,
+			&fwdX, &fwdY, &fwdZ,
+			&fwdTurn, &upTurn);
 		// Create new wall object
 		walls.push_back(CWall());
 		// Call the create method on the new object with the appropriate data and a wall texture
-		walls[i].Create("resources\\textures\\wall.jpg", width, height, glm::vec3(posX, posY, posZ), glm::vec3(upX, upY, upZ), glm::vec3(fwdX, fwdY, fwdZ), fwdTurn, upTurn);
+		walls[i].Create("resources\\textures\\wall.jpg", width, height, glm::vec3(posX, posY, posZ),
+			glm::vec3(upX, upY, upZ), glm::vec3(fwdX, fwdY, fwdZ), fwdTurn, upTurn);
 		// Call the audio object to create a geometry object for fmod to apply any occlusion
 		m_pAudio->CreateWall(walls[i].pos, walls[i].up, walls[i].fwd, walls[i].m_width, walls[i].m_height);
 	}
@@ -371,18 +378,30 @@ void Game::Update()
 	// Update the total elapsed time of the game that can be used for progress 
 	gameElapsedTime += deltaTime;
 
-	// 
+	// The distance between the horse position 
+	// and the destination position is checked
 	if (glm::distance(movePoints[currentDestinationPoint], horsePosition) <= 5.0f)
 	{
+		// The horse position is set to the destination position
 		horsePosition = movePoints[currentDestinationPoint];
 
+		// We now make the horse move to the next point
+		// and make sure we don't go out of range using
+		// the modular operator
 		currentDestinationPoint++;
 		currentDestinationPoint = currentDestinationPoint % movePoints.size();
 
+		// The direction along which the horse moves is calculated by
+		// normalising the distance between the new point and the horse position
 		moveDirection = glm::normalize(movePoints[currentDestinationPoint] - horsePosition);
 	}
 	else
 	{
+		// If the horse hasn't reached, then move the horse
+		// along the calculated direction.
+		// The speed is varied based on manual control of the filter value
+		// OR
+		// Using a sin function to lerp between slow/fast speeds
 		horsePosition += (moveDirection * moveSpeed * (toggleManualControl? currentFilterValue : glm::abs(sin(gameElapsedTime))) * (float)deltaTime);
 	}
 
