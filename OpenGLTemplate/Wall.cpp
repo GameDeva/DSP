@@ -10,15 +10,19 @@ CWall::~CWall()
 
 
 // Create the plane, including its geometry, texture mapping, normal, and colour
-void CWall::Create(string filename, float width, float height)
+void CWall::Create(string sFilename, float fWidth, float fHeight, glm::vec3 pos, glm::vec3 up, glm::vec3 fwd)
 {
 
-	m_width = width;
-	m_height = height;
+	this->pos = pos;
+	this->up = up;
+	this->fwd = fwd;
+
+	m_width = fWidth;
+	m_height = fHeight;
 
 	// Load the texture
-	m_texture.Load(filename, true);
-	m_filename = filename;
+	m_texture.Load(sFilename, true);
+	m_filename = sFilename;
 
 	// Set parameters for texturing using sampler object
 	m_texture.SetSamplerObjectParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

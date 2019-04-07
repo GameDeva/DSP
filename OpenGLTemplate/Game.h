@@ -82,4 +82,6 @@ private:
 
 	glm::vec3 horsePosition;
 
+	vector<CWall> walls;
+	
 };

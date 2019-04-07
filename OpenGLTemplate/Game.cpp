@@ -36,6 +36,8 @@ Source code drawn from a number of sources and examples, including contributions
 #include "Audio.h"
 #include "Wall.h"
 
+#define _CRT_SECURE_NO_WARNINGS
+
 // Constructor
 Game::Game()
 {
@@ -177,9 +179,42 @@ void Game::Initialise()
 	m_pAudio->LoadMusicStream("Resources\\Audio\\DST-Garote.mp3");	// Royalty free music from http://www.nosoapradio.us/
 	m_pAudio->PlayMusicStream();
 
-	m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight);
+	walls = vector<CWall>();
+/*
+	m_pWall->Create("resources\\textures\\wall.jpg", m_wallWidth, m_wallHeight, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
+	
 
-	// m_pAudio->CreateWall(m_wallPos, glm::vec3(0,1,0), glm::vec3(0, 0, 1), m_wallWidth, m_wallHeight);
+	m_pAudio->CreateWall(m_wallPos, , glm::vec3(0, 0, 1), m_pWall->m_width, m_pWall->m_height);
+*/
+	FILE *wallSetupFile;
+	int count=0;
+	fopen_s(&wallSetupFile, "resources\\scripts\\wallsInfo.txt", "r");
+
+	fscanf(wallSetupFile, "%d", &count);
+
+	for (int i = 0; i < count; i++)
+	{
+		int w = 0;
+		int h = 0;
+		int x1 = 0;
+		int y1 = 0;
+		int z1 = 0;
+		int x2 = 0;
+		int y2 = 0;
+		int z2 = 0;
+		int x3 = 0;
+		int y3 = 0;
+		int z3 = 0;
+
+		fscanf(wallSetupFile, "%d %d %d %d %d %d %d %d %d %d %d", &w, &h, &x1, &y1, &z1, &x2, &y2, &z2, &x3, &y3, &z3);
+			
+		walls.push_back(CWall());
+		walls[i].Create("resources\\textures\\wall.jpg", w, h, glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), glm::vec3(x3, y3, z3));
+		m_pAudio->CreateWall(walls[i].pos, walls[i].up, walls[i].fwd, walls[i].m_width, walls[i].m_height);
+	}
+
+	fclose(wallSetupFile);
+
 
 }
 
@@ -286,14 +321,20 @@ void Game::Render()
 	m_pSphere->Render();
 	modelViewMatrixStack.Pop();
 
-	// Render the wall
-	modelViewMatrixStack.Push();
-	modelViewMatrixStack.Translate(m_wallPos);
-	// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
-	pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
-	pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
-	m_pWall->Render();
-	modelViewMatrixStack.Pop();
+	int wallsSize = walls.size();
+	for (int i = 0; i < wallsSize; i++)
+	{
+		// Render the wall
+		modelViewMatrixStack.Push();
+		modelViewMatrixStack.Translate(walls[i].pos);
+		// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
+		// modelViewMatrixStack.Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 90.0f);
+		pMainProgram->SetUniform("matrices.modelViewMatrix", modelViewMatrixStack.Top());
+		pMainProgram->SetUniform("matrices.normalMatrix", m_pCamera->ComputeNormalMatrix(modelViewMatrixStack.Top()));
+		walls[i].Render();
+		modelViewMatrixStack.Pop();
+	}
+
 
 	// Draw the 2D graphics after the 3D graphics
 	DisplayFrameRate();
